@@ -2,6 +2,23 @@ import pandas as pd
 from pandas import DataFrame
 from typing import Tuple
 import logging
+import json
+
+def read_json_file(file_path):
+    try:
+        with open(file_path,'r') as file:
+            data = json.load(file)
+        return data
+    except FileNotFoundError:
+        print(f"错误：文件 '{file_path}' 未找到")
+        return None
+    except json.JSONDecodeError as e:
+        print(f"错误：JSON解析失败 - {e}")
+        return None
+    except Exception as e:
+        print(f"错误：读取文件时发生意外错误 - {e}")
+        return None
+
 
 def load_data(logger:logging) -> Tuple[DataFrame,DataFrame]:
     """加载项目文件夹下的entity和relation数据"""

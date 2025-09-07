@@ -1,24 +1,9 @@
 import pandas as pd
-import json
 import data
 
 
-def read_json_file(file_path):
-    try:
-        with open(file_path,'r') as file:
-            data = json.load(file)
-        return data
-    except FileNotFoundError:
-        print(f"错误：文件 '{file_path}' 未找到")
-        return None
-    except json.JSONDecodeError as e:
-        print(f"错误：JSON解析失败 - {e}")
-        return None
-    except Exception as e:
-        print(f"错误：读取文件时发生意外错误 - {e}")
-        return None
 
-json_data = read_json_file('../rag_system/graph_data.json')
+json_data = data.read_json_file('../rag_system/graph_data.json')
 entities_dic = json_data['entities']
 attributes_dic = json_data['attributes']
 relations_list = json_data['relations']

@@ -1,3 +1,5 @@
+import ast
+
 import pandas as pd
 from pandas import DataFrame
 from typing import Tuple
@@ -19,11 +21,27 @@ def read_json_file(file_path):
         print(f"错误：读取文件时发生意外错误 - {e}")
         return None
 
+def convert_to_list(value):
+    """将字符串安全转换为列表"""
+    try:
+        # 处理空值
+        if pd.isna(value) or value.strip() in ['', 'nan', 'NaN', 'null', 'None']:
+            return []
+        # 安全转换
+        return ast.literal_eval(value)
+    except (ValueError, SyntaxError, TypeError):
+        # 转换失败时返回空列表
+        print('转换错误')
+        return []
+
 
 def load_data(logger:logging) -> Tuple[DataFrame,DataFrame]:
     """加载项目文件夹下的entity和relation数据"""
     try:
-        entity_df = pd.read_csv('data/entity.csv',index_col='产品ID')
+        entity_df = pd.read_csv('data/entity.csv',
+                                index_col='产品ID',
+                                parse_dates=['首次销售日期'],
+                                converters={'流程': convert_to_list})
         entity_df = csv_entity_data_type_convert(entity_df)
         relation_df = pd.read_csv('data/relation.csv')
         logger.info("MCP Server: 数据加载成功。")
